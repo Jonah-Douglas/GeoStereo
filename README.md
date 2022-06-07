@@ -11,3 +11,5 @@ General Flow:
 5. Application sends request to Spotify for a specific playlist already containing songs which belong within specific categories.
 
 Other features to implement might be factoring in local Date time for special days such as Halloween or days leading up to Christmas for thematical playlists.
+
+![GeoStereo Logo](/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png)

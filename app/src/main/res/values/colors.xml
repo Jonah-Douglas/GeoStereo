@@ -7,4 +7,12 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    // Custom color palette
+    <color name="brown">#3c2408</color>
+    <color name="light_brown">#694c30</color>
+    <color name="dark_brown">#1e0000</color>
+    <color name="yellow">#f3dc33</color>
+    <color name="light_yellow">#ffff6a</color>
+    <color name="dark_yellow">#bcab00</color>
 </resources>

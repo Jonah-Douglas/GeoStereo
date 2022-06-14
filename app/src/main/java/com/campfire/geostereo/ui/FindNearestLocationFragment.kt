@@ -15,10 +15,16 @@ class FindNearestLocationFragment : Fragment() {
     // Property only valid between onCreateView and onDestroyView, so !! ok
     private val binding get() = _binding!!
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        setHasOptionsMenu(true)
+
+        super.onCreate(savedInstanceState)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentFindNearestLocationBinding.inflate(inflater, container, false)
         return binding.root
     }

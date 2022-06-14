@@ -1,19 +1,16 @@
 package com.campfire.geostereo
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.campfire.geostereo.databinding.ActivityMainBinding
 
-// TODO: -create user profile
-//       -host user image
-//       -authenticate via Facebook
-//       -implement messaging between users
 
 /**
  * Main activity that hosts all fragments for GeoStereo.
@@ -44,15 +41,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks
-        return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
-        }
+        val navController = findNavController(R.id.nav_host_fragment_content_main)
+        return item.onNavDestinationSelected(navController) || super.onOptionsItemSelected(item)
     }
 
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration)
-                ||super.onSupportNavigateUp()
+                || super.onSupportNavigateUp()
     }
 }

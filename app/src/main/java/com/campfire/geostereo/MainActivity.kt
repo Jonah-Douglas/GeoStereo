@@ -1,5 +1,6 @@
 package com.campfire.geostereo
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -26,8 +27,12 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setSupportActionBar(binding.toolbar)
+        // Start Splash screen to show loading screen
+        // TODO: Make it so animation plays, currently has to be clicked
+        startActivity(Intent(this, SplashActivity::class.java))
 
+        // Setup the actionbar
+        setSupportActionBar(binding.toolbar)
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)

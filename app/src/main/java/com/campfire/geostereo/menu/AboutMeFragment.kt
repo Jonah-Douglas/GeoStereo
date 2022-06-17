@@ -27,7 +27,7 @@ class AboutMeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentAboutMeBinding.inflate(inflater, container,false)
+        _binding = FragmentAboutMeBinding.inflate(inflater, container, false)
         return binding.root
     }
 

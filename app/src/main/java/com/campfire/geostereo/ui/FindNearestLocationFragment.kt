@@ -1,17 +1,31 @@
 package com.campfire.geostereo.ui
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.campfire.geostereo.databinding.FragmentFindNearestLocationBinding
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapView
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 
 
-class FindNearestLocationFragment : Fragment() {
+class FindNearestLocationFragment : Fragment(), OnMapReadyCallback {
 
     private var _binding: FragmentFindNearestLocationBinding? = null
+    private lateinit var mMap: MapView
+    private lateinit var mGoogleMap: GoogleMap
 
     // Property only valid between onCreateView and onDestroyView, so !! ok
     private val binding get() = _binding!!
@@ -27,7 +41,22 @@ class FindNearestLocationFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentFindNearestLocationBinding.inflate(inflater, container, false)
+
+        mMap = binding.mapView
+        mMap.onCreate(savedInstanceState)
+        mMap.getMapAsync(this)
+
         return binding.root
+    }
+
+    override fun onPause() {
+        mMap.onPause()
+        super.onPause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mMap.onResume()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -48,4 +77,77 @@ class FindNearestLocationFragment : Fragment() {
             ).show()
         }
     }
+
+    /**
+     * Manipulates the map once available.
+     * This callback is triggered when the map is ready to be used.
+     * This is where we can add markers or lines, add listeners or move the camera. In this case,
+     * we just add a marker near Sydney, Australia.
+     * If Google Play services is not installed on the device, the user will be prompted to install
+     * it inside the SupportMapFragment. This method will only be triggered once the user has
+     * installed Google Play services and returned to the app.
+     */
+    override fun onMapReady(googleMap: GoogleMap) {
+        mGoogleMap = googleMap
+        // enableMyLocation()
+        /*val mFusedLocationClient =
+        var currentLocation =
+        var caPosition = CameraPosition.builder()
+            .target()
+            .zoom(18.0F)
+            .tilt(45.0F)
+            .build()*/
+
+        // Add a marker in Sydney and move the camera
+        val sydney = LatLng(-34.0, 151.0)
+        mGoogleMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+    }
+
+    /**
+     * Enables the My Location layer if the fine location permission has been granted.
+     */
+    /*@SuppressLint("MissingPermission")
+    private fun enableMyLocation() {
+
+        // [START maps_check_location_permission]
+        // 1. Check if permissions are granted, if so, enable the my location layer
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            mGoogleMap.isMyLocationEnabled = true
+            return
+        }
+
+        // 2. If if a permission rationale dialog should be shown
+        if (ActivityCompat.shouldShowRequestPermissionRationale(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) || ActivityCompat.shouldShowRequestPermissionRationale(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+        ) {
+            PermissionUtils.RationaleDialog.newInstance(
+                LOCATION_PERMISSION_REQUEST_CODE, true
+            ).show(supportFragmentManager, "dialog")
+            return
+        }
+
+        // 3. Otherwise, request permission
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ),
+            LOCATION_PERMISSION_REQUEST_CODE
+        )
+        // [END maps_check_location_permission]
+    }*/
 }

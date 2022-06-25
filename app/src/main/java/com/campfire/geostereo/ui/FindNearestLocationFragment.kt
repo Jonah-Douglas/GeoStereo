@@ -90,6 +90,7 @@ class FindNearestLocationFragment : Fragment(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mGoogleMap = googleMap
         // enableMyLocation()
+        // serious git issues
         /*val mFusedLocationClient =
         var currentLocation =
         var caPosition = CameraPosition.builder()

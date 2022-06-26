@@ -166,6 +166,7 @@ class FindNearestLocationFragment : Fragment(), OnMapReadyCallback {
                     }
                 }
             } else {
+                // TODO: Why is this executing on every first allow of privileges
                 mGoogleMap.moveCamera(
                     CameraUpdateFactory
                         .newLatLngZoom(defaultLocation, DEFAULT_ZOOM.toFloat())
@@ -194,8 +195,11 @@ class FindNearestLocationFragment : Fragment(), OnMapReadyCallback {
         ) {
             locationPermissionGranted = true
         } else {
-            ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION)
+            ActivityCompat.requestPermissions(
+                activity!!, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
+            )
+            // TODO: What do I do here to make the first app use navigate correctly
         }
     }
 

@@ -9,27 +9,23 @@
         android:id="@+id/find_nearest_location_fragment"
         android:name="com.campfire.geostereo.ui.FindNearestLocationFragment"
         android:label="@string/app_name"
-        tools:layout="@layout/fragment_find_nearest_location">
-    </fragment>
+        tools:layout="@layout/fragment_find_nearest_location" />
 
     <fragment
         android:id="@+id/about_me_fragment"
         android:name="com.campfire.geostereo.menu.AboutMeFragment"
         android:label="@string/app_name"
-        tools:layout="@layout/fragment_about_me">
-    </fragment>
+        tools:layout="@layout/fragment_about_me" />
 
     <fragment
         android:id="@+id/profile_fragment"
         android:name="com.campfire.geostereo.menu.ProfileFragment"
         android:label="@string/app_name"
-        tools:layout="@layout/fragment_profile">
-    </fragment>
+        tools:layout="@layout/fragment_profile" />
 
     <fragment
         android:id="@+id/messaging_fragment"
         android:name="com.campfire.geostereo.menu.MessagingFragment"
         android:label="@string/app_name"
-        tools:layout="@layout/fragment_messaging">
-    </fragment>
+        tools:layout="@layout/fragment_messaging" />
 </navigation>

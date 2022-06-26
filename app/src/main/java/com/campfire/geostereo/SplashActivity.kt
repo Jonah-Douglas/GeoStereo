@@ -1,5 +1,6 @@
 package com.campfire.geostereo
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -9,6 +10,7 @@ import android.os.Looper
 /**
  *  Activity to show a quick Splash screen for GeoStereo App
  */
+@SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity() {
 
     private val SPLASH_TIME_OUT: Long = 500

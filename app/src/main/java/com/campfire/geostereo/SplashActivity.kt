@@ -11,7 +11,7 @@ import android.os.Looper
  */
 class SplashActivity : AppCompatActivity() {
 
-    private val SPLASH_TIME_OUT: Long = 6000
+    private val SPLASH_TIME_OUT: Long = 500
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

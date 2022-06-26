@@ -1,17 +1,25 @@
 package com.campfire.geostereo.ui
 
 import android.Manifest
+import android.util.Log
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
+import android.provider.SettingsSlicesContract.KEY_LOCATION
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.campfire.geostereo.MainActivity
+import com.campfire.geostereo.R
 import com.campfire.geostereo.databinding.FragmentFindNearestLocationBinding
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
@@ -26,6 +34,12 @@ class FindNearestLocationFragment : Fragment(), OnMapReadyCallback {
     private var _binding: FragmentFindNearestLocationBinding? = null
     private lateinit var mMap: MapView
     private lateinit var mGoogleMap: GoogleMap
+    private var locationPermissionGranted = false
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private val defaultLocation = LatLng(-33.8523341, 151.2106085)
+    private lateinit var currentLatLng: LatLng
+    private var lastKnownLocation: Location? = null
+    private var cameraPosition: CameraPosition? = null
 
     // Property only valid between onCreateView and onDestroyView, so !! ok
     private val binding get() = _binding!!
@@ -34,6 +48,19 @@ class FindNearestLocationFragment : Fragment(), OnMapReadyCallback {
         setHasOptionsMenu(true)
 
         super.onCreate(savedInstanceState)
+
+        lastKnownLocation = savedInstanceState?.getParcelable(KEY_LOCATION)
+        cameraPosition = savedInstanceState?.getParcelable(KEY_CAMERA_POSITION)
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(activity!!)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        mGoogleMap.let {
+            outState.putParcelable(KEY_LOCATION, lastKnownLocation)
+            outState.putParcelable(KEY_CAMERA_POSITION, cameraPosition)
+        }
+        super.onSaveInstanceState(outState)
     }
 
     override fun onCreateView(
@@ -89,49 +116,130 @@ class FindNearestLocationFragment : Fragment(), OnMapReadyCallback {
      */
     override fun onMapReady(googleMap: GoogleMap) {
         mGoogleMap = googleMap
-        // enableMyLocation()
-        // serious git issues
-        /*val mFusedLocationClient =
-        var currentLocation =
-        var caPosition = CameraPosition.builder()
-            .target()
-            .zoom(18.0F)
-            .tilt(45.0F)
-            .build()*/
 
-        // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
-        mGoogleMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+        getLocationPermission()
+
+        updateLocationUI()
+
+        getDeviceLocation()
     }
 
     /**
+     * Gets the current location of the device, and positions the map's camera.
+     */
+    @SuppressLint("MissingPermission")
+    private fun getDeviceLocation() {
+        /*
+         * Get the best and most recent location of the device, which may be null in rare
+         * cases when a location is not available.
+         */
+        try {
+            if (locationPermissionGranted) {
+                val locationResult = fusedLocationProviderClient.lastLocation
+                locationResult.addOnCompleteListener(activity!!) { task ->
+                    if (task.isSuccessful) {
+                        // Set the map's camera position to the current location of the device.
+                        lastKnownLocation = task.result
+                        currentLatLng =
+                            LatLng(lastKnownLocation!!.latitude, lastKnownLocation!!.longitude)
+                        if (lastKnownLocation != null) {
+                            mGoogleMap.moveCamera(
+                                CameraUpdateFactory.newLatLngZoom(
+                                    currentLatLng,
+                                    DEFAULT_ZOOM.toFloat()
+                                )
+                            )
+                            mGoogleMap.addMarker(
+                                MarkerOptions()
+                                    .title("Your Location")
+                                    .position(currentLatLng)
+                            )
+                        }
+                    } else {
+                        Log.d(TAG, "Current location is null. Using defaults.")
+                        Log.e(TAG, "Exception: %s", task.exception)
+                        mGoogleMap.moveCamera(
+                            CameraUpdateFactory
+                                .newLatLngZoom(defaultLocation, DEFAULT_ZOOM.toFloat())
+                        )
+                        mGoogleMap.uiSettings.isMyLocationButtonEnabled = false
+                    }
+                }
+            } else {
+                mGoogleMap.moveCamera(
+                    CameraUpdateFactory
+                        .newLatLngZoom(defaultLocation, DEFAULT_ZOOM.toFloat())
+                )
+                mGoogleMap.uiSettings.isMyLocationButtonEnabled = false
+                mGoogleMap.addMarker(
+                    MarkerOptions()
+                        .title("Your Location")
+                        .position(defaultLocation)
+                )
+            }
+        } catch (e: SecurityException) {
+            Log.e("Exception: %s", e.message, e)
+        }
+    }
+
+    /**
+     * Prompts the user for permission to use the device location.
+     */
+    private fun getLocationPermission() {
+        if (ContextCompat.checkSelfPermission(
+                activity!!,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
+            == PackageManager.PERMISSION_GRANTED
+        ) {
+            locationPermissionGranted = true
+        } else {
+            ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION)
+        }
+    }
+
+    /**
+     * Updates the map's UI settings if user gave access.
+     */
+    @SuppressLint("MissingPermission")
+    private fun updateLocationUI() {
+        try {
+            if (locationPermissionGranted) {
+                mGoogleMap.isMyLocationEnabled = true
+                mGoogleMap.uiSettings.isMyLocationButtonEnabled = true
+            } else {
+                mGoogleMap.isMyLocationEnabled = false
+                mGoogleMap.uiSettings.isMyLocationButtonEnabled = false
+                lastKnownLocation = null
+                getLocationPermission()
+            }
+        } catch (e: SecurityException) {
+            Log.e("Exception: %s", e.message, e)
+        }
+    }
+
+    /*/**
      * Enables the My Location layer if the fine location permission has been granted.
      */
-    /*@SuppressLint("MissingPermission")
+    @SuppressLint("MissingPermission")
     private fun enableMyLocation() {
 
         // [START maps_check_location_permission]
         // 1. Check if permissions are granted, if so, enable the my location layer
         if (ContextCompat.checkSelfPermission(
-                this,
+                activity!!,
                 Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
             mGoogleMap.isMyLocationEnabled = true
             return
         }
 
-        // 2. If if a permission rationale dialog should be shown
+        // 2. Check if a permission rationale dialog should be shown
         if (ActivityCompat.shouldShowRequestPermissionRationale(
-                this,
+                activity!!,
                 Manifest.permission.ACCESS_FINE_LOCATION
-            ) || ActivityCompat.shouldShowRequestPermissionRationale(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
             )
         ) {
             PermissionUtils.RationaleDialog.newInstance(
@@ -142,13 +250,22 @@ class FindNearestLocationFragment : Fragment(), OnMapReadyCallback {
 
         // 3. Otherwise, request permission
         ActivityCompat.requestPermissions(
-            this,
+            activity!!,
             arrayOf(
                 Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
             ),
             LOCATION_PERMISSION_REQUEST_CODE
         )
         // [END maps_check_location_permission]
     }*/
+
+    companion object {
+        private const val TAG = "FindNearestLocationFragment::class.java"
+        private const val DEFAULT_ZOOM = 15
+        private const val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
+
+        // Keys for activity state
+        private const val KEY_CAMERA_POSITION = "camera_position"
+        private const val KEY_LOCATION = "location"
+    }
 }

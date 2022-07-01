@@ -6,18 +6,17 @@ import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
-import android.provider.SettingsSlicesContract.KEY_LOCATION
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.campfire.geostereo.MainActivity
-import com.campfire.geostereo.R
+import com.campfire.geostereo.data.DataSource
+import com.campfire.geostereo.data.DataSource.exLocations
 import com.campfire.geostereo.databinding.FragmentFindNearestLocationBinding
+import com.campfire.geostereo.model.ExLocation
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -29,20 +28,31 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 
 
+/**
+ *  Fragment that handles finding a nearby location or example location.
+ */
 class FindNearestLocationFragment : Fragment(), OnMapReadyCallback {
 
     private var _binding: FragmentFindNearestLocationBinding? = null
+    private val binding get() = _binding!!
+
+    // layout vars
     private lateinit var mMap: MapView
-    private lateinit var mGoogleMap: GoogleMap
     private var locationPermissionGranted = false
+
+    // Google Map vars
+    private lateinit var mGoogleMap: GoogleMap
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-    private val defaultLocation = LatLng(-33.8523341, 151.2106085)
+    private var randomLocation: ExLocation
     private lateinit var currentLatLng: LatLng
     private var lastKnownLocation: Location? = null
     private var cameraPosition: CameraPosition? = null
 
-    // Property only valid between onCreateView and onDestroyView, so !! ok
-    private val binding get() = _binding!!
+
+    // Pull a random location from my DataSource
+    init {
+        randomLocation = DataSource.exLocations.shuffled()[0]
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setHasOptionsMenu(true)
@@ -160,27 +170,42 @@ class FindNearestLocationFragment : Fragment(), OnMapReadyCallback {
                         Log.e(TAG, "Exception: %s", task.exception)
                         mGoogleMap.moveCamera(
                             CameraUpdateFactory
-                                .newLatLngZoom(defaultLocation, DEFAULT_ZOOM.toFloat())
+                                .newLatLngZoom(randomLocation.latLng, DEFAULT_ZOOM.toFloat())
+                        )
+                        mGoogleMap.addMarker(
+                            MarkerOptions()
+                                .title(randomLocation.name)
+                                .position(currentLatLng)
                         )
                         mGoogleMap.uiSettings.isMyLocationButtonEnabled = false
                     }
                 }
             } else {
-                // TODO: Why is this executing on every first allow of privileges
+                selectRandomExLocation()
                 mGoogleMap.moveCamera(
-                    CameraUpdateFactory
-                        .newLatLngZoom(defaultLocation, DEFAULT_ZOOM.toFloat())
+                    CameraUpdateFactory.newLatLngZoom(
+                        randomLocation.latLng,
+                        DEFAULT_ZOOM.toFloat()
+                    )
                 )
-                mGoogleMap.uiSettings.isMyLocationButtonEnabled = false
+                updateLocationUI()
+
                 mGoogleMap.addMarker(
                     MarkerOptions()
-                        .title("Your Location")
-                        .position(defaultLocation)
+                        .title(randomLocation.name)
+                        .position(randomLocation.latLng)
                 )
             }
         } catch (e: SecurityException) {
             Log.e("Exception: %s", e.message, e)
         }
+    }
+
+    /**
+     *   Randomly selects a location from ExLocations to use for
+     */
+    private fun selectRandomExLocation() {
+        randomLocation = exLocations.shuffled()[0]
     }
 
     /**
@@ -194,6 +219,8 @@ class FindNearestLocationFragment : Fragment(), OnMapReadyCallback {
             == PackageManager.PERMISSION_GRANTED
         ) {
             locationPermissionGranted = true
+            updateLocationUI()
+            getDeviceLocation()
         } else {
             ActivityCompat.requestPermissions(
                 activity!!, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),

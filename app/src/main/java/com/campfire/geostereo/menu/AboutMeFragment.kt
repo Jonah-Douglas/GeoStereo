@@ -5,9 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
-import com.campfire.geostereo.R
 import com.campfire.geostereo.databinding.FragmentAboutMeBinding
+
 
 /**
  *  Fragment to handle simple about me info (photo, name, scrollable read)
@@ -15,12 +14,6 @@ import com.campfire.geostereo.databinding.FragmentAboutMeBinding
 class AboutMeFragment : Fragment() {
     private var _binding: FragmentAboutMeBinding? = null
     private val binding get() = _binding!!
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        setHasOptionsMenu(true)
-
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

@@ -6,9 +6,7 @@ import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -51,12 +49,10 @@ class FindNearestLocationFragment : Fragment(), OnMapReadyCallback {
 
     // Pull a random location from my DataSource
     init {
-        randomLocation = DataSource.exLocations.shuffled()[0]
+        randomLocation = exLocations.shuffled()[0]
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setHasOptionsMenu(true)
-
         super.onCreate(savedInstanceState)
 
         lastKnownLocation = savedInstanceState?.getParcelable(KEY_LOCATION)
@@ -101,6 +97,7 @@ class FindNearestLocationFragment : Fragment(), OnMapReadyCallback {
 
         binding.findNearestLocation.setOnClickListener {
             // TODO: Google Maps search here (create coroutine call to do searches so it's nonblocking
+            // TODO: Call onAudioFocusChange to handle pausing audio when app is interrupted
             // TODO: On Result, navigate to new fragment
             // shows nearest location
             // if nothing nearby, query a weather API

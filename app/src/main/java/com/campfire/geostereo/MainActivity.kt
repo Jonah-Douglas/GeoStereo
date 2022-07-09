@@ -57,6 +57,7 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.hide()
 
         // TODO: Determine if user's phone has GPS, store it via Pref DataStore
+
     }
 
     override fun onSupportNavigateUp(): Boolean {

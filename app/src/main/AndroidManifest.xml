@@ -8,7 +8,7 @@
 
     <uses-feature
         android:name="android.hardware.location.gps"
-        android:required="true" />
+        android:required="false" />
 
     <application
         android:allowBackup="true"
@@ -25,9 +25,6 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBWh7Fah-LINDZ3Ppf17d7-ht7OGSrjOhA" />
 
-        <activity
-            android:name=".SplashActivity"
-            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

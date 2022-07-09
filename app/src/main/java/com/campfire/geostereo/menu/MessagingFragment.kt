@@ -31,4 +31,8 @@ class MessagingFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+    companion object {
+        private const val TAG = "MessagingFragment::class.java"
+    }
 }

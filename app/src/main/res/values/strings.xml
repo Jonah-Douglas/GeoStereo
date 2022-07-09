@@ -8,10 +8,9 @@
     <string name="menu_messaging">Messaging</string>
     <string name="menu_about_me">About Me</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
+    <string name="finish">Finish</string>
 
     <string name="about_me_text">
         Hello, my name is Jonah Douglas and I am excited you\'re here! I am a Junior Android

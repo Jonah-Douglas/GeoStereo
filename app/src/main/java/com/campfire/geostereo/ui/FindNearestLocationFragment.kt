@@ -11,7 +11,8 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.campfire.geostereo.data.DataSource
+import androidx.lifecycle.Transformations.map
+import com.campfire.geostereo.MainActivity.Companion.hasGPS
 import com.campfire.geostereo.data.DataSource.exLocations
 import com.campfire.geostereo.databinding.FragmentFindNearestLocationBinding
 import com.campfire.geostereo.model.ExLocation
@@ -24,6 +25,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import kotlinx.coroutines.flow.Flow
 
 
 /**
@@ -141,6 +143,7 @@ class FindNearestLocationFragment : Fragment(), OnMapReadyCallback {
          * cases when a location is not available.
          */
         try {
+            // TODO: need to check if user has GPS capability, use Pref DataStore
             if (locationPermissionGranted) {
                 val locationResult = fusedLocationProviderClient.lastLocation
                 locationResult.addOnCompleteListener(activity!!) { task ->

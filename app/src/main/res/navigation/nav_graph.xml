@@ -3,29 +3,58 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/find_nearest_location_fragment">
+    app:startDestination="@id/splashFragment">
 
     <fragment
-        android:id="@+id/find_nearest_location_fragment"
+        android:id="@+id/splashFragment"
+        android:name="com.campfire.geostereo.splash.SplashFragment"
+        android:label="@string/app_name"
+        tools:layout="@layout/fragment_splash" >
+        <action
+            android:id="@+id/action_splashFragment_to_viewPagerFragment"
+            app:destination="@id/viewPagerFragment"
+            app:popUpTo="@id/splashFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_splashFragment_to_findNearestLocationFragment"
+            app:destination="@id/findNearestLocationFragment"
+            app:popUpTo="@id/splashFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/findNearestLocationFragment"
         android:name="com.campfire.geostereo.ui.FindNearestLocationFragment"
         android:label="@string/app_name"
         tools:layout="@layout/fragment_find_nearest_location" />
 
     <fragment
-        android:id="@+id/about_me_fragment"
+        android:id="@+id/aboutMeFragment"
         android:name="com.campfire.geostereo.menu.AboutMeFragment"
         android:label="@string/app_name"
         tools:layout="@layout/fragment_about_me" />
 
     <fragment
-        android:id="@+id/profile_fragment"
+        android:id="@+id/profileFragment"
         android:name="com.campfire.geostereo.menu.ProfileFragment"
         android:label="@string/app_name"
         tools:layout="@layout/fragment_profile" />
 
     <fragment
-        android:id="@+id/messaging_fragment"
+        android:id="@+id/messagingFragment"
         android:name="com.campfire.geostereo.menu.MessagingFragment"
         android:label="@string/app_name"
         tools:layout="@layout/fragment_messaging" />
+
+    <fragment
+        android:id="@+id/viewPagerFragment"
+        android:name="com.campfire.geostereo.onboarding.ViewPagerFragment"
+        android:label="@string/app_name"
+        tools:layout="@layout/fragment_view_pager" >
+        <action
+            android:id="@+id/action_viewPagerFragment_to_findNearestLocationFragment"
+            app:destination="@id/findNearestLocationFragment"
+            app:popUpTo="@id/viewPagerFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>

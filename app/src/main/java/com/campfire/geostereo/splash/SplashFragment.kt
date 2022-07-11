@@ -8,14 +8,21 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.campfire.geostereo.R
+import com.campfire.geostereo.data.PrimaryViewModel
+import com.campfire.geostereo.databinding.FragmentFindNearestLocationBinding
+import com.campfire.geostereo.databinding.FragmentSplashBinding
 
+
+private const val SPLASH_MILLIS_TIME: Long = 2000
 
 /**
  *  Fragment handling initial Splash screen.
  */
 class SplashFragment : Fragment() {
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -26,7 +33,7 @@ class SplashFragment : Fragment() {
             } else {
                 findNavController().navigate(R.id.action_splashFragment_to_viewPagerFragment)
             }
-        }, 3000)
+        }, SPLASH_MILLIS_TIME)
 
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_splash, container, false)

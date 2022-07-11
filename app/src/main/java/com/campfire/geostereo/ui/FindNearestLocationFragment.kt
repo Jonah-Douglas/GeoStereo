@@ -11,9 +11,9 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Transformations.map
-import com.campfire.geostereo.MainActivity.Companion.hasGPS
+import androidx.fragment.app.activityViewModels
 import com.campfire.geostereo.data.DataSource.exLocations
+import com.campfire.geostereo.data.PrimaryViewModel
 import com.campfire.geostereo.databinding.FragmentFindNearestLocationBinding
 import com.campfire.geostereo.model.ExLocation
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -25,7 +25,6 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import kotlinx.coroutines.flow.Flow
 
 
 /**
@@ -35,6 +34,9 @@ class FindNearestLocationFragment : Fragment(), OnMapReadyCallback {
 
     private var _binding: FragmentFindNearestLocationBinding? = null
     private val binding get() = _binding!!
+
+    // ViewModel
+    private val sharedViewModel: PrimaryViewModel by activityViewModels()
 
     // layout vars
     private lateinit var mMap: MapView
@@ -47,7 +49,6 @@ class FindNearestLocationFragment : Fragment(), OnMapReadyCallback {
     private lateinit var currentLatLng: LatLng
     private var lastKnownLocation: Location? = null
     private var cameraPosition: CameraPosition? = null
-
 
     // Pull a random location from my DataSource
     init {
@@ -96,6 +97,11 @@ class FindNearestLocationFragment : Fragment(), OnMapReadyCallback {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.apply {
+            viewModel = sharedViewModel
+            findNearestLocationFragment = this@FindNearestLocationFragment
+        }
 
         binding.findNearestLocation.setOnClickListener {
             // TODO: Google Maps search here (create coroutine call to do searches so it's nonblocking

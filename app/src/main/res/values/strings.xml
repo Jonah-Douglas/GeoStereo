@@ -2,15 +2,25 @@
     <string name="app_name" translatable="false">GeoStereo</string>
     <string name="about_me_title" translatable="false">Jonah Douglas</string>
     <string name="find_nearest_location">Find Nearest Location</string>
+
     <!-- Strings used for action bar items -->
     <string name="action_settings">Settings</string>
     <string name="menu_profile">Profile</string>
     <string name="menu_messaging">Messaging</string>
     <string name="menu_about_me">About Me</string>
+
     <!-- Strings used for fragments for navigation -->
     <string name="next">Next</string>
     <string name="previous">Previous</string>
     <string name="finish">Finish</string>
+
+    <!-- Strings used for OnBoarding -->
+    <string name="onBoardingTitle1">Music on the Go</string>
+    <string name="onBoardingBody1">Find music based off your immediate location</string>
+    <string name="onBoardingTitle2">Choose your Player</string>
+    <string name="onBoardingBody2">Supporting Spotify and YT Music</string>
+    <string name="onBoardingTitle3">GPS Location Access</string>
+    <string name="onBoardingBody3">No Location data stored here! App allows for use without location data as well</string>
 
     <string name="about_me_text">
         Hello, my name is Jonah Douglas and I am excited you\'re here! I am a Junior Android

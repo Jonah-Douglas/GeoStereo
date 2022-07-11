@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
+    android:background="@color/dark_brown"
     tools:context=".ui.FindNearestLocationFragment">
 
     <com.google.android.gms.maps.MapView

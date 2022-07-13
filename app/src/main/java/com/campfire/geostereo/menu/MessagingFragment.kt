@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import com.campfire.geostereo.data.PrimaryViewModel
 import com.campfire.geostereo.databinding.FragmentMessagingBinding
 
 
@@ -17,6 +19,17 @@ import com.campfire.geostereo.databinding.FragmentMessagingBinding
 class MessagingFragment : Fragment() {
     private var _binding: FragmentMessagingBinding? = null
     private val binding get() = _binding!!
+
+    private val sharedViewModel: PrimaryViewModel by activityViewModels()
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.apply {
+            viewModel = sharedViewModel
+            messagingFragment = this@MessagingFragment
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

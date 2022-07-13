@@ -6,7 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.activityViewModels
 import com.campfire.geostereo.R
+import com.campfire.geostereo.data.PrimaryViewModel
 import com.campfire.geostereo.databinding.FragmentViewPagerBinding
 import com.campfire.geostereo.onboarding.screens.FirstScreen
 import com.campfire.geostereo.onboarding.screens.SecondScreen
@@ -18,12 +20,14 @@ import com.campfire.geostereo.onboarding.screens.ThirdScreen
  */
 class ViewPagerFragment : Fragment() {
     private var _binding: FragmentViewPagerBinding? = null
-    private val binding get() = _binding
+    private val binding get() = _binding!!
+
+    private val sharedViewModel: PrimaryViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         _binding = FragmentViewPagerBinding.inflate(inflater, container, false)
 
@@ -35,12 +39,21 @@ class ViewPagerFragment : Fragment() {
 
         val adapter = ViewPagerAdapter(
             fragmentList,
-            requireActivity().supportFragmentManager,
+            childFragmentManager,
             lifecycle
         )
 
-        binding?.onboardingViewPager?.adapter = adapter
+        binding.onboardingViewPager.adapter = adapter
 
-        return binding?.root
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.apply {
+            viewModel = sharedViewModel
+            viewPagerFragment = this@ViewPagerFragment
+        }
     }
 }

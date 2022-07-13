@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)
         // TODO: Need to show this after splash complete
-        supportActionBar?.hide()
+        // supportActionBar?.hide()
 
         // TODO: Determine if user's phone has GPS, store it via Pref DataStore
     }
